@@ -63,12 +63,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
    */
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name, options } = data;
-    if(options){
-      const sumOption = options.find(option => option.name === 'sum');
-    } else {
-      const sumOption = 0;
-
-    }
+    const sumOption = options?.find(option => option.name === 'sum') ?? 0;
     const sum = sumOption ? sumOption.value : 0;
     switch (name) {
 
