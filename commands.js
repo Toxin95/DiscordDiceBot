@@ -42,7 +42,7 @@ const ALL_COMMANDS = [];
         "name": "sum",
         "description": "Somma valore a risultato",
         "type": 4,
-      }
+      },
       {
         "name": "n_dice",
         "description": "Numero dadi da tirare",
