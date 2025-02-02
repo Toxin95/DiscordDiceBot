@@ -34,10 +34,11 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
   const rollDice = (faces, nDice = 1, sum = 0) => {
     let diceRes = [];
+    let content = '';
+    let answer = '';
     for (let i = 0; i < nDice; i++) {
       diceRes.push(Math.floor(Math.random() * faces) + 1);
     }
-    let answer = '';
     if (faces == 20) {
       if (diceRes == 1) {
         answer = 'ME PENSA ORA TU MUORE: ';
@@ -45,12 +46,18 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
         answer = 'UHHHH FATTO CRITICO: ';
       }
     }
+    let dicesReduced = diceRes.reduce((acc, val) => acc + val, 0);
+    if (diceRes.length > 1) {
+      content = (sum) ? `(${diceRes.join('+')})+${sum}=${dicesReduced+sum}` : `${diceRes.join('+')}=${dicesReduced}`;
+    } else {
+      content = (sum) ? `${answer}${diceRes.join('+')}+${sum}=${dicesReduced+sum}` : `${answer}${diceRes.join('+')}`;
+    }
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         // Fetches a random emoji to send from a helper function
-        content: (sum) ? `${answer}(${diceRes.join('+')})+${sum} = ${diceRes.reduce((acc, val) => acc + val, 0) + sum}` : `${answer}${diceRes.join('+')}=${diceRes.reduce((acc, val) => acc + val, 0)}`,
-      
+        content: content,
+
       },
     };
   }
