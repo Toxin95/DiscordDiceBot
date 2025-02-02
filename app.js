@@ -32,8 +32,11 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
   // Interaction id, type and data
   const { id, type, data } = req.body;
 
-  const rollDice = (faces, sum = 0) => {
-    let diceRes = Math.floor(Math.random() * faces) + 1;
+  const rollDice = (faces, nDice = 1, sum = 0) => {
+    let diceRes = [];
+    for (let i = 0; i < nDice; i++) {
+      diceRes.push(Math.floor(Math.random() * faces) + 1);
+    }
     let answer = '';
     if (faces == 20) {
       if (diceRes == 1) {
@@ -46,7 +49,8 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         // Fetches a random emoji to send from a helper function
-        content: (sum) ? `${answer}${diceRes}+${sum} = ${diceRes + sum}` : `${answer}${diceRes}`,
+        content: (sum) ? `${answer}(${diceRes.concat('+')})+${sum} = ${diceRes.reduce((acc, val) => acc + val, 0) + sum}` : `${answer}${diceRes.concat('+')}=${diceRes.reduce((acc, val) => acc + val, 0)}`,
+      
       },
     };
   }
@@ -64,23 +68,25 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name, options } = data;
     const sumOption = options?.find(option => option.name === 'sum') ?? 0;
+    const nDiceOption = options?.find(option => option.name === 'n_dice') ?? 1;
     const sum = sumOption ? sumOption.value : 0;
+    const nDice = nDiceOption ? nDiceOption.value : 1;
     switch (name) {
 
       case 'roll4':
-        return res.send(rollDice(4, sum));
+        return res.send(rollDice(4, nDice, sum));
       case 'roll6':
-        return res.send(rollDice(6, sum));
+        return res.send(rollDice(6, nDice, sum));
       case 'roll8':
-        return res.send(rollDice(8, sum));
+        return res.send(rollDice(8, nDice, sum));
       case 'roll10':
-        return res.send(rollDice(10, sum));
+        return res.send(rollDice(10, nDice, sum));
       case 'roll12':
-        return res.send(rollDice(12, sum));
+        return res.send(rollDice(12, nDice, sum));
       case 'roll20':
-        return res.send(rollDice(20, sum));
+        return res.send(rollDice(20, nDice, sum));
       case 'roll100':
-        return res.send(rollDice(100, sum));
+        return res.send(rollDice(100, nDice, sum));
       default:
         console.error(`unknown command: ${name}`);
         return res.status(400).json({ error: 'unknown command' });

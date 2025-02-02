@@ -43,6 +43,11 @@ const ALL_COMMANDS = [];
         "description": "Somma valore a risultato",
         "type": 4,
       }
+      {
+        "name": "n_dice",
+        "description": "Numero dadi da tirare",
+        "type": 4,
+      }
     ],
     integration_types: [0, 1],
     contexts: [0, 1, 2],
