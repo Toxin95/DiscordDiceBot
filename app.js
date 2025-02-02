@@ -49,7 +49,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         // Fetches a random emoji to send from a helper function
-        content: (sum) ? `${answer}(${diceRes.concat('+')})+${sum} = ${diceRes.reduce((acc, val) => acc + val, 0) + sum}` : `${answer}${diceRes.concat('+')}=${diceRes.reduce((acc, val) => acc + val, 0)}`,
+        content: (sum) ? `${answer}(${diceRes.join('+')})+${sum} = ${diceRes.reduce((acc, val) => acc + val, 0) + sum}` : `${answer}${diceRes.join('+')}=${diceRes.reduce((acc, val) => acc + val, 0)}`,
       
       },
     };
@@ -101,6 +101,8 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 });
 
 
+
 app.listen(PORT, () => {
   console.log('Listening on port', PORT);
 });
+
